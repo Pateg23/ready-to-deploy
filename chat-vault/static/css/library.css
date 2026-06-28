@@ -1,0 +1,114 @@
+.lib { height: 100%; overflow-y: auto; }
+.lib-nav {
+  position: sticky; top: 0; z-index: 10;
+  background: oklch(0.18 0.012 200 / 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.lib-nav-inner {
+  max-width: 1200px; margin: 0 auto;
+  padding: 14px 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.brand { display: flex; align-items: center; gap: 10px; color: inherit; }
+.brand svg { width: 26px; height: 26px; color: var(--primary); }
+.brand b { font-family: "Inter Tight"; font-size: 18px; }
+.brand small { color: var(--muted-foreground); font-size: 12px; display: block; }
+.lib-user { display: flex; align-items: center; gap: 14px; font-size: 14px; }
+.lib-user .uname { color: var(--muted-foreground); }
+
+.lib-main { max-width: 1200px; margin: 0 auto; padding: 32px 24px 80px; }
+.lib-hero { margin-bottom: 24px; }
+.lib-hero h1 { font-size: 32px; margin-bottom: 6px; }
+.lib-hero p { color: var(--muted-foreground); }
+
+.lib-search {
+  position: relative; margin-bottom: 24px;
+}
+.lib-search input {
+  width: 100%; padding: 12px 14px 12px 42px;
+  border-radius: 12px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--foreground); outline: none;
+}
+.lib-search input:focus { border-color: var(--primary); }
+.lib-search svg {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  color: var(--muted-foreground);
+}
+
+.lib-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 28px;
+}
+.lib-stat {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+.lib-stat .num { font-family: "Inter Tight"; font-size: 28px; font-weight: 700; }
+.lib-stat .lbl { color: var(--muted-foreground); font-size: 13px; margin-bottom: 8px; }
+.lib-stat .bar {
+  height: 4px; border-radius: 2px;
+  background: var(--gradient-primary);
+}
+.lib-stat:nth-child(2) .bar { background: linear-gradient(135deg, oklch(0.7 0.16 200), oklch(0.6 0.18 260)); }
+.lib-stat:nth-child(3) .bar { background: linear-gradient(135deg, oklch(0.7 0.18 290), oklch(0.65 0.18 320)); }
+
+.chat-list { display: flex; flex-direction: column; gap: 12px; }
+.chat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center;
+  transition: transform var(--t-fast), border-color var(--t-fast), background var(--t-fast);
+  cursor: pointer;
+}
+.chat-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+.chat-card .avs { display: flex; }
+.chat-card .av { margin-left: -10px; border: 2px solid var(--card); }
+.chat-card .av:first-child { margin-left: 0; }
+.chat-card .meta { min-width: 0; }
+.chat-card .meta .title {
+  font-weight: 600; font-size: 16px; display: flex; align-items: center; gap: 8px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.chat-card .badge {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 2px 8px; border-radius: 999px;
+  background: oklch(0.78 0.16 160 / 0.15); color: var(--primary);
+}
+.chat-card .info {
+  display: flex; gap: 14px; color: var(--muted-foreground); font-size: 13px;
+  margin-top: 4px; flex-wrap: wrap;
+}
+.chat-card .info span { display: inline-flex; gap: 4px; align-items: center; }
+.chat-card .actions { display: flex; gap: 6px; opacity: 0; transition: opacity var(--t-fast); }
+.chat-card:hover .actions { opacity: 1; }
+
+.empty {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 60px 20px;
+  text-align: center;
+}
+.empty h2 { margin-bottom: 8px; }
+.empty p { color: var(--muted-foreground); margin-bottom: 20px; }
+
+.fab {
+  position: fixed; bottom: 24px; right: 24px;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--gradient-primary); color: var(--primary-foreground);
+  display: grid; place-items: center;
+  box-shadow: 0 16px 36px -12px oklch(0.78 0.16 160 / 0.6);
+  transition: transform var(--t-fast);
+  z-index: 50;
+}
+.fab:hover { transform: translateY(-2px) scale(1.04); }
+
+@media (max-width: 600px) {
+  .lib-main { padding: 20px 14px 80px; }
+  .lib-stats { grid-template-columns: 1fr; }
+  .lib-nav-inner { padding: 12px 14px; }
+}
