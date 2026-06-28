@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+vault.db
+vault.db-shm
+vault.db-wal
+.venv/
+static/media/uploads/

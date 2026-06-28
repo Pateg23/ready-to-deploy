@@ -48,8 +48,7 @@ const App = (() => {
   function avatar(name, size = 36) {
     const initials = (name || "?").trim().slice(0, 2).toUpperCase();
     const hue = hueFor(name || "");
-    const s = size;
-    return `<div class="av" style="width:${s}px;height:${s}px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:${Math.round(s*0.38)}px;color:oklch(0.96 0.005 180);background:linear-gradient(135deg, oklch(0.55 0.14 ${hue}), oklch(0.4 0.12 ${(hue+40)%360}));box-shadow:0 2px 6px oklch(0 0 0 / 0.3);">${escapeHtml(initials)}</div>`;
+    return `<div class="av" style="width:${size}px;height:${size}px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:${Math.round(size*0.38)}px;color:oklch(0.96 0.005 180);background:linear-gradient(135deg, oklch(0.55 0.14 ${hue}), oklch(0.4 0.12 ${(hue+40)%360}));box-shadow:0 2px 6px oklch(0 0 0 / 0.3);">${escapeHtml(initials)}</div>`;
   }
 
   function fmtTime(ts) { return new Date(ts * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }); }
@@ -105,64 +104,35 @@ const App = (() => {
   }
   function render(path) {
     path = path || (window.location.hash.replace(/^#/, "") || "/auth");
-    if (routes[path]) return routes[path]({});
+    if (routes[path]) return routes[path]({}, path);
     for (const pat of Object.keys(routes)) {
       const m = routeMatches(pat, path);
       if (m) return routes[pat](m, path);
     }
-    return (routes["/auth"] || (() => {}))({});
-  }
-
-  async function boot() {
-    window.addEventListener("hashchange", () => render());
-    await Promise.all([
-      import("./auth.js"), import("./library.js"),
-      import("./upload.js"), import("./simulator.js"),
-      import("./analytics.js"),
-    ]);
-    try {
-      currentUser = await api("/api/me");
-      if (!window.location.hash || window.location.hash === "#/auth") navigate("/library");
-      else render();
-    } catch {
-      currentUser = null;
-      navigate("/auth");
-    }
+    return (routes["/auth"] || (() => {}))({}, path);
   }
 
   function setUser(u) { currentUser = u; }
 
-  const App = {
+  const api_app = {
     root, api, uploadFile, toast, avatar, fmtTime, fmtDate, fmtRange, fmtDuration,
     relTime, escapeHtml, tickSVG, hueFor,
     route, navigate, render, setUser,
     get user() { return currentUser; },
   };
-  window.App = App;
-  return App;
+  window.App = api_app;
+  return api_app;
 })();
 
 export default App;
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => App.boot ? App.boot() : null);
-} else {
-  // boot is internal; expose
-}
-(async () => { await App._bootOnce?.(); })();
-// Boot explicitly
-App._booted = true;
-(async () => {
-  // Wait a tick so modules can register their routes
-  await new Promise((r) => setTimeout(r, 0));
-})();
-
-// Trigger the actual boot procedure
-const _boot = async () => {
+async function boot() {
   window.addEventListener("hashchange", () => App.render());
   await Promise.all([
-    import("./auth.js"), import("./library.js"),
-    import("./upload.js"), import("./simulator.js"),
+    import("./auth.js"),
+    import("./library.js"),
+    import("./upload.js"),
+    import("./simulator.js"),
     import("./analytics.js"),
   ]);
   try {
@@ -174,6 +144,10 @@ const _boot = async () => {
     App.setUser(null);
     App.navigate("/auth");
   }
-};
-if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", _boot);
-else _boot();
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", boot);
+} else {
+  boot();
+}
