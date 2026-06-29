@@ -88,7 +88,7 @@ function LibraryPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="hidden text-xs text-slate-400 sm:inline">{user.email}</span>
+            <span className="hidden text-xs text-slate-400 sm:inline">@{(user.email ?? "").split("@")[0]}</span>
             <button
               onClick={() => signOut()}
               className="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs hover:bg-white/10"

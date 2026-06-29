@@ -142,3 +142,31 @@
     color: var(--color-foreground);
   }
 }
+
+/* ---------- WhatsApp-style chat surface ---------- */
+
+/* Emoji font stack — uses the platform's native color emoji font so glyphs
+   look the way they do on the user's device (Apple Color Emoji on Apple,
+   Segoe UI Emoji on Windows, Noto Color Emoji on Linux/Android). */
+.wa-emoji {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
+    "Twemoji Mozilla", "EmojiOne Color", "Android Emoji", sans-serif;
+  font-variant-emoji: emoji;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+}
+
+/* WhatsApp chat doodle wallpaper — deep teal with a soft, subtle pattern. */
+.wa-chat-bg {
+  background-color: #0b141a;
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.025) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 78% 42%, rgba(255, 255, 255, 0.022) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 34% 72%, rgba(255, 255, 255, 0.02) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 62% 88%, rgba(255, 255, 255, 0.022) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 92% 12%, rgba(255, 255, 255, 0.018) 0 1.2px, transparent 2px),
+    radial-gradient(ellipse at 50% 50%, rgba(0, 168, 132, 0.06), transparent 60%);
+  background-size: 220px 220px, 260px 260px, 300px 300px, 240px 240px, 180px 180px, 100% 100%;
+}
+

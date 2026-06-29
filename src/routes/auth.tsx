@@ -3,9 +3,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/auth")({
-  head: () => ({
-    meta: [{ title: "Sign in — Chat Vault" }],
-  }),
+  head: () => ({ meta: [{ title: "Sign in — Chat Vault" }] }),
   component: AuthPage,
 });
 
@@ -13,7 +11,7 @@ function AuthPage() {
   const { user, loading, signIn, signUp } = useAuth();
   const nav = useNavigate();
   const [mode, setMode] = useState<"in" | "up">("in");
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -26,71 +24,103 @@ function AuthPage() {
     e.preventDefault();
     setBusy(true);
     setErr(null);
-    const res = mode === "in" ? await signIn(email, password) : await signUp(email, password);
+    const res = mode === "in" ? await signIn(username, password) : await signUp(username, password);
     setBusy(false);
     if (res.error) setErr(res.error);
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,oklch(0.22_0.06_265)_0%,oklch(0.12_0.02_265)_60%)] text-slate-100">
-      <div className="grid min-h-screen place-items-center px-4">
-        <div className="w-full max-w-sm">
-          <div className="mb-8 flex items-center justify-center gap-3">
-            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-emerald-400 to-cyan-500 text-slate-900 shadow-lg shadow-emerald-500/30">
-              <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
-                <path d="M12 2a10 10 0 1 0 5.3 18.5L22 22l-1.5-4.7A10 10 0 0 0 12 2Z" />
+    <div className="relative min-h-screen overflow-hidden bg-[#0b141a] text-[#e9edef]">
+      {/* aurora background */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full bg-[#00a884]/25 blur-[140px]" />
+        <div className="absolute -bottom-40 -right-32 h-[520px] w-[520px] rounded-full bg-[#0091ea]/20 blur-[140px]" />
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 1px 1px, #ffffff 1px, transparent 0)",
+            backgroundSize: "22px 22px",
+          }}
+        />
+      </div>
+
+      <div className="relative grid min-h-screen place-items-center px-4 py-10">
+        <div className="w-full max-w-[380px]">
+          <div className="mb-7 flex flex-col items-center text-center">
+            <div className="grid h-14 w-14 place-items-center rounded-[20px] bg-gradient-to-br from-[#25d366] to-[#128c7e] shadow-[0_18px_50px_-12px_rgba(37,211,102,0.6)]">
+              <svg viewBox="0 0 32 32" className="h-7 w-7 text-white" fill="currentColor">
+                <path d="M16 3C9.4 3 4 8.3 4 14.9c0 2.4.7 4.6 2 6.5L4 29l7.9-2c1.8.9 3.9 1.4 6.1 1.4 6.6 0 12-5.3 12-11.9C30 8.3 24.6 3 18 3h-2zm0 2h2c5.5 0 10 4.5 10 9.9 0 5.5-4.5 9.9-10 9.9-2 0-3.9-.6-5.5-1.6l-.5-.3-4.7 1.2 1.3-4.6-.3-.5C7.5 18.4 7 16.7 7 14.9 7 9.5 11.5 5 16 5z" />
               </svg>
             </div>
-            <div>
-              <div className="text-xl font-semibold tracking-tight">Chat Vault</div>
-              <div className="text-xs text-slate-400">Your private WhatsApp museum</div>
-            </div>
+            <h1 className="mt-4 text-2xl font-semibold tracking-tight">Chat Vault</h1>
+            <p className="mt-1 text-[13px] text-[#8696a0]">
+              Your private archive for WhatsApp conversations.
+            </p>
           </div>
 
-          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-2xl backdrop-blur">
-            <div className="mb-5 flex rounded-xl bg-white/5 p-1 text-sm">
+          <div className="rounded-3xl border border-white/[0.06] bg-[#111b21]/80 p-6 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)] backdrop-blur-xl">
+            <div className="mb-5 flex rounded-full bg-[#0b141a] p-1 text-[13px]">
               <button
                 onClick={() => setMode("in")}
-                className={`flex-1 rounded-lg py-1.5 transition ${mode === "in" ? "bg-white/10 text-white" : "text-slate-400"}`}
+                className={`flex-1 rounded-full py-1.5 transition ${mode === "in" ? "bg-[#00a884] text-[#0b141a] font-semibold" : "text-[#8696a0]"}`}
               >
                 Sign in
               </button>
               <button
                 onClick={() => setMode("up")}
-                className={`flex-1 rounded-lg py-1.5 transition ${mode === "up" ? "bg-white/10 text-white" : "text-slate-400"}`}
+                className={`flex-1 rounded-full py-1.5 transition ${mode === "up" ? "bg-[#00a884] text-[#0b141a] font-semibold" : "text-[#8696a0]"}`}
               >
                 Create account
               </button>
             </div>
+
             <form onSubmit={submit} className="space-y-3">
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm outline-none focus:border-emerald-400/60"
-              />
-              <input
-                type="password"
-                required
-                minLength={8}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password (min 8 chars)"
-                className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm outline-none focus:border-emerald-400/60"
-              />
-              {err && <p className="text-xs text-rose-400">{err}</p>}
+              <label className="block">
+                <span className="mb-1 block text-[11px] uppercase tracking-wider text-[#8696a0]">
+                  Username
+                </span>
+                <div className="flex items-center rounded-xl border border-white/5 bg-[#0b141a] px-3 focus-within:border-[#00a884]/70">
+                  <span className="mr-2 text-[#54656f]">@</span>
+                  <input
+                    autoComplete="username"
+                    required
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="your_name"
+                    className="w-full bg-transparent py-2.5 text-sm outline-none placeholder:text-[#54656f]"
+                  />
+                </div>
+              </label>
+              <label className="block">
+                <span className="mb-1 block text-[11px] uppercase tracking-wider text-[#8696a0]">
+                  Password
+                </span>
+                <input
+                  type="password"
+                  autoComplete={mode === "in" ? "current-password" : "new-password"}
+                  required
+                  minLength={6}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full rounded-xl border border-white/5 bg-[#0b141a] px-3 py-2.5 text-sm outline-none placeholder:text-[#54656f] focus:border-[#00a884]/70"
+                />
+              </label>
+              {err && (
+                <p className="rounded-lg bg-rose-500/10 px-3 py-2 text-xs text-rose-300">{err}</p>
+              )}
               <button
                 disabled={busy}
-                className="w-full rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-lg shadow-emerald-500/20 transition hover:brightness-110 disabled:opacity-50"
+                className="mt-1 w-full rounded-xl bg-[#00a884] px-4 py-3 text-sm font-semibold text-[#0b141a] shadow-lg shadow-[#00a884]/30 transition hover:bg-[#06cf9c] disabled:opacity-60"
               >
-                {busy ? "…" : mode === "in" ? "Sign in" : "Create account"}
+                {busy ? "Please wait…" : mode === "in" ? "Sign in" : "Create account"}
               </button>
             </form>
-            <p className="mt-4 text-center text-[11px] text-slate-500">
-              Your chats stay private — each account has its own isolated vault stored locally
-              in your browser.
+
+            <p className="mt-5 text-center text-[11px] leading-relaxed text-[#54656f]">
+              No email required. Each account gets its own isolated vault.
+              Your chats never leave your device unless you create a public link.
             </p>
           </div>
         </div>
