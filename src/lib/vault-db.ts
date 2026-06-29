@@ -1,4 +1,4 @@
-// IndexedDB layer for Chat Vault — chats, messages, media blobs.
+// IndexedDB layer for Chat Vault — partitioned per user id so accounts are isolated.
 import { openDB, type IDBPDatabase } from "idb";
 import type { ParsedMessage } from "./parser";
 
@@ -19,16 +19,18 @@ export interface MessageRow extends ParsedMessage {
   mediaKey?: string | null;
 }
 
-interface VaultSchema {
-  chats: ChatRow;
-  messages: MessageRow;
-  media: { key: string; chatId: string; blob: Blob; type: string };
+const dbs = new Map<string, Promise<IDBPDatabase>>();
+
+let currentUserId: string = "guest";
+
+export function setVaultUser(userId: string | null) {
+  currentUserId = userId || "guest";
 }
 
-let dbp: Promise<IDBPDatabase> | null = null;
-export function db() {
-  if (!dbp) {
-    dbp = openDB("chat-vault", 1, {
+function db() {
+  const key = currentUserId;
+  if (!dbs.has(key)) {
+    const p = openDB(`chat-vault::${key}`, 1, {
       upgrade(d) {
         d.createObjectStore("chats", { keyPath: "id" });
         const m = d.createObjectStore("messages", { keyPath: "id", autoIncrement: true });
@@ -38,8 +40,9 @@ export function db() {
         md.createIndex("by_chat", "chatId");
       },
     });
+    dbs.set(key, p);
   }
-  return dbp;
+  return dbs.get(key)!;
 }
 
 export async function listChats(): Promise<ChatRow[]> {
@@ -84,7 +87,6 @@ export async function createChat(
 
   let mediaCount = 0;
   const participants = new Map<string, number>();
-  // pre-load list of unused media to spill
   const unused = new Set(mediaByName.keys());
 
   for (const msg of msgs) {
@@ -107,10 +109,8 @@ export async function createChat(
     await mStore.put({ ...msg, chatId: id, mediaKey });
   }
 
-  // Spill unused media into media-kind messages without a key (orphans get attached)
   const orphans = [...unused];
   if (orphans.length) {
-    // Find messages without mediaKey but kind != text/system/deleted
     const idx = mStore.index("by_chat_seq");
     let cur = await idx.openCursor(IDBKeyRange.bound([id, 0], [id, Number.MAX_SAFE_INTEGER]));
     while (cur && orphans.length) {
