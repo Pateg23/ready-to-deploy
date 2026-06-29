@@ -68,12 +68,12 @@ function ChatPage() {
   if (!chat) return <div className="min-h-screen bg-[oklch(0.12_0.02_265)]" />;
 
   return (
-    <div className="min-h-screen bg-[oklch(0.12_0.02_265)] text-slate-100">
-      <header className="sticky top-0 z-20 border-b border-white/5 bg-[oklch(0.16_0.03_265)]/90 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
+    <div className="min-h-screen bg-[#0b141a] text-[#e9edef]">
+      <header className="sticky top-0 z-20 border-b border-black/40 bg-[#202c33]">
+        <div className="mx-auto grid max-w-6xl grid-cols-[auto_auto_minmax(0,1fr)_auto] items-center gap-2 px-2 py-2 sm:gap-3 sm:px-4 sm:py-2.5">
           <Link
             to="/"
-            className="rounded-md p-1.5 text-slate-400 hover:bg-white/5 hover:text-slate-200"
+            className="grid h-9 w-9 place-items-center rounded-full text-[#aebac1] hover:bg-white/5"
             aria-label="Back"
           >
             <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
@@ -81,42 +81,50 @@ function ChatPage() {
             </svg>
           </Link>
           <div
-            className="grid h-10 w-10 place-items-center rounded-full text-sm font-semibold text-white shadow"
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-sm font-semibold text-white shadow"
             style={{ background: colorForName(chat.title) }}
           >
             {initials(chat.title)}
           </div>
-          <div className="min-w-0 flex-1">
-            <div className="truncate font-semibold">{chat.title}</div>
-            <div className="truncate text-xs text-slate-400">
-              {chat.messageCount.toLocaleString()} messages · {chat.participants.length} participants
+          <div className="min-w-0">
+            <div className="truncate font-semibold leading-tight">{chat.title}</div>
+            <div className="truncate text-[11px] text-[#8696a0]">
+              {chat.participants
+                .slice(0, 4)
+                .map((p) => p.name)
+                .join(", ")}
+              {chat.participants.length > 4 ? ` +${chat.participants.length - 4}` : ""}
             </div>
           </div>
-          <button
-            onClick={() => setShareOpen(true)}
-            className="hidden items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-200 hover:bg-white/10 sm:inline-flex"
-          >
-            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            Share
-          </button>
-          <div className="flex rounded-xl bg-white/5 p-1 text-xs">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <button
-              onClick={() => setTab("chat")}
-              className={`rounded-lg px-3 py-1.5 transition ${tab === "chat" ? "bg-white/10 text-white" : "text-slate-400 hover:text-slate-200"}`}
+              onClick={() => setShareOpen(true)}
+              className="grid h-9 w-9 place-items-center rounded-full text-[#aebac1] hover:bg-white/5"
+              aria-label="Share"
+              title="Create public link"
             >
-              Chat
+              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </button>
-            <button
-              onClick={() => setTab("analytics")}
-              className={`rounded-lg px-3 py-1.5 transition ${tab === "analytics" ? "bg-white/10 text-white" : "text-slate-400 hover:text-slate-200"}`}
-            >
-              Analytics
-            </button>
+            <div className="flex rounded-full bg-[#0b141a] p-0.5 text-[11px] sm:text-xs">
+              <button
+                onClick={() => setTab("chat")}
+                className={`rounded-full px-3 py-1.5 transition ${tab === "chat" ? "bg-[#00a884] font-semibold text-[#0b141a]" : "text-[#8696a0] hover:text-[#e9edef]"}`}
+              >
+                Chat
+              </button>
+              <button
+                onClick={() => setTab("analytics")}
+                className={`rounded-full px-3 py-1.5 transition ${tab === "analytics" ? "bg-[#00a884] font-semibold text-[#0b141a]" : "text-[#8696a0] hover:text-[#e9edef]"}`}
+              >
+                Stats
+              </button>
+            </div>
           </div>
         </div>
       </header>
+
 
       {tab === "chat" ? <Simulator source={source} /> : <AnalyticsTab chat={chat} />}
 
