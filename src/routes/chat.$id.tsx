@@ -184,7 +184,7 @@ function ShareDialog({ chat, onClose }: { chat: ChatRow; onClose: () => void }) 
         token,
         user_id: user.id,
         title: chat.title,
-        payload,
+        payload: payload as unknown as never,
       });
       if (error) throw error;
       setUrl(`${window.location.origin}/share/${token}`);

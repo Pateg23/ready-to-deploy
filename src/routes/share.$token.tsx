@@ -40,7 +40,7 @@ function SharePage() {
         setErr("This shared link is missing or has been removed.");
         return;
       }
-      setPayload(data.payload as Payload);
+      setPayload(data.payload as unknown as Payload);
     })();
   }, [token]);
 

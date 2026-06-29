@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ShareTokenRouteImport } from './routes/share.$token'
 import { Route as ChatIdRouteImport } from './routes/chat.$id'
 
 const AuthRoute = AuthRouteImport.update({
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShareTokenRoute = ShareTokenRouteImport.update({
+  id: '/share/$token',
+  path: '/share/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ChatIdRoute = ChatIdRouteImport.update({
   id: '/chat/$id',
   path: '/chat/$id',
@@ -33,30 +39,34 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/chat/$id': typeof ChatIdRoute
+  '/share/$token': typeof ShareTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/chat/$id': typeof ChatIdRoute
+  '/share/$token': typeof ShareTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/chat/$id': typeof ChatIdRoute
+  '/share/$token': typeof ShareTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/chat/$id'
+  fullPaths: '/' | '/auth' | '/chat/$id' | '/share/$token'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/chat/$id'
-  id: '__root__' | '/' | '/auth' | '/chat/$id'
+  to: '/' | '/auth' | '/chat/$id' | '/share/$token'
+  id: '__root__' | '/' | '/auth' | '/chat/$id' | '/share/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   ChatIdRoute: typeof ChatIdRoute
+  ShareTokenRoute: typeof ShareTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/share/$token': {
+      id: '/share/$token'
+      path: '/share/$token'
+      fullPath: '/share/$token'
+      preLoaderRoute: typeof ShareTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/chat/$id': {
       id: '/chat/$id'
       path: '/chat/$id'
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   ChatIdRoute: ChatIdRoute,
+  ShareTokenRoute: ShareTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
