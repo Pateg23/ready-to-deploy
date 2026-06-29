@@ -483,20 +483,12 @@ function AnalyticsView({ chat }: { chat: ChatRow }) {
               </div>
             ))}
             {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d, di) => (
-              <>
-                <div key={"l" + d} className="pr-2 text-[10px] text-slate-500">{d}</div>
-                {data.heatmap[di].map((v, hi) => {
-                  const a = data.heatmapMax ? v / data.heatmapMax : 0;
-                  return (
-                    <div
-                      key={d + hi}
-                      title={`${d} ${hi}:00 — ${v} messages`}
-                      className="h-[14px] w-[14px] rounded-[3px]"
-                      style={{ background: `rgba(52, 211, 153, ${0.06 + a * 0.94})` }}
-                    />
-                  );
-                })}
-              </>
+              <FragmentRow
+                key={d}
+                label={d}
+                row={data.heatmap[di]}
+                max={data.heatmapMax}
+              />
             ))}
           </div>
         </div>
