@@ -559,3 +559,22 @@ function AnalyticsView({ chat }: { chat: ChatRow }) {
     </main>
   );
 }
+
+function FragmentRow({ label, row, max }: { label: string; row: number[]; max: number }) {
+  return (
+    <>
+      <div className="pr-2 text-[10px] text-slate-500">{label}</div>
+      {row.map((v, hi) => {
+        const a = max ? v / max : 0;
+        return (
+          <div
+            key={hi}
+            title={`${label} ${hi}:00 — ${v} messages`}
+            className="h-[14px] w-[14px] rounded-[3px]"
+            style={{ background: `rgba(52, 211, 153, ${0.06 + a * 0.94})` }}
+          />
+        );
+      })}
+    </>
+  );
+}
